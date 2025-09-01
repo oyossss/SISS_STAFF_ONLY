@@ -3,7 +3,7 @@ import hashlib, binascii
 import secrets, string
 import sqlite3
 import time
-import tempfile
+
 from urllib.parse import urljoin
 from flask import Flask, render_template, render_template_string, request, redirect, url_for, session, g, flash
 from functools import wraps
@@ -44,7 +44,7 @@ def login_required(view):
     @wraps(view)
     def wrapped_view(**kwargs):
         if "uid" not in session:
-            flash("먼저 로그인해야합니다.")
+            flash("로그인 먼저 해주세요")
             return redirect(url_for("login"))
         return view(**kwargs)
     return wrapped_view
@@ -172,7 +172,7 @@ def list_page():
     ).fetchone()
 
     if not (admin and provided_code == admin["staff_code"]):
-        return "STAFF ONLY!!!!", 403
+        return render_template("403.html"), 403
 
     custom_notice = request.args.get("motd")
     rendered_notice = None
@@ -189,11 +189,11 @@ def list_page():
     )
 
 @app.route("/report", methods=["GET", "POST"])
+@login_required
 def report():
     if request.method == "POST":
         path = (request.form.get("path") or "").strip()
-        #if not path.startswith("/mypage"):
-            #return render_template("report.html")
+        #/mypage?
         target_url = urljoin(BASE_URL, path.lstrip("/"))
         verdict = bot_visit(target_url)
         return render_template("report.html", msg=verdict)
@@ -204,9 +204,9 @@ def bot_visit(url: str):
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
     from selenium.common.exceptions import TimeoutException, WebDriverException
+    import time
+    from urllib.parse import urljoin
 
     opts = webdriver.ChromeOptions()
     opts.add_argument("--headless=new")
@@ -215,42 +215,43 @@ def bot_visit(url: str):
     opts.add_argument("--incognito")
     opts.add_argument("--disable-cache")
 
+
     service = ChromeService(executable_path="/usr/bin/chromedriver")
     d = webdriver.Chrome(service=service, options=opts)
-    d.set_page_load_timeout(5)
+    
+
+    d.set_page_load_timeout(7)
+
+    start_time = 0
 
     try:
-        # 관리자 로그인
         d.get(urljoin(BASE_URL, "/login"))
         d.find_element(By.NAME, "username").send_keys(ADMIN_USER)
         d.find_element(By.NAME, "password").send_keys(ADMIN_PASS)
         d.find_element(By.CSS_SELECTOR, "form button, form input[type=submit]").click()
         time.sleep(0.5)
 
-
         start_time = time.time()
         d.get(url)
-        try:
-
-            WebDriverWait(d, WAIT_SEC).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
-        except TimeoutException:
-            pass
-        end_time = time.time()
-        duration = end_time - start_time
+        duration = time.time() - start_time
 
         return f"[티켓 신고 시스템] 티켓 검수가 완료되었습니다. (소요 시간: {duration:.2f}초)"
-    except WebDriverException:
-        return "[티켓 신고 시스템] 티켓을 검수하는 도중 문제가 발생했습니다. (CODE: RENDER_FAIL)"
-    except Exception:
-        return "[티켓 신고 시스템] 티켓을 검수하는 도중 문제가 발생했습니다. (CODE: RENDER_FAIL)"
+    # HINT: 크래쉬는 타임아웃을 유발할 수 있습니다.
+    except (TimeoutException, WebDriverException) as e:
+
+        duration = time.time() - start_time if start_time > 0 else 0
+        
+
+        if isinstance(e, TimeoutException):
+            return f"[오류 발생] 페이지 로딩 시간이 초과되었습니다. (소요 시간: {duration:.2f}초)"
+        else:
+            return f"[오류 발생] 브라우저 오류가 발생했습니다. (소요 시간: {duration:.2f}초)"
+
     finally:
         try:
             d.quit()
         except:
             pass
-
 
 def init_db():
     db = get_db()
