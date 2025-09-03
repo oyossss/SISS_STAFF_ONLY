@@ -46,27 +46,53 @@ blue;} input#staff_code[value^=a] {
 }
 * { background-image: var(--g); }
 ```
-
 ### 2. Report 페이지 활용
-- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도 
-- CSS 페이로드가 실행되면, **렌더링 시간(duration)** 차이로 조건이 맞는지 여부를 판별 가능   
 
-<img width="1132" height="593" alt="스크린샷 2025-08-28 오전 3 04 58" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />
+- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도합니다.  
+- 이때, 티켓의 `optional` 값에 삽입된 **CSS 페이로드**가 실행됩니다.  
+- 조건이 맞으면 CSS 변수 중첩으로 인한 **브라우저 크래시 → 지연 발생**, 조건이 틀리면 **정상 렌더링 → 빠른 응답**이 발생합니다.  
+- 따라서 참가자는 **duration 값의 차이**를 기반으로 staff_code의 각 문자를 판별할 수 있습니다.  
 
-* value 값이 틀리다면(조건 불일치) 크래쉬 발생이 안 나기 때문에 지연도 없으므로 컴퓨터 환경에 따라 소요시간: 0.xx초 ~ 1.xx초 *
+#### 스크린샷 및 응답 비교
 
-<img width="1132" height="593" alt="스크린샷 2025-08-28 오전 9 44 13" src="https://github.com/user-attachments/assets/ea04e751-2d4d-41bd-8477-e1926a7ba2ba" />
+<img width="1132" height="593" alt="조건 불일치" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />  
+*그림 2. value 값이 틀린 경우 (조건 불일치). 크래시 발생 없음 → 소요시간 약 0.xx초 ~ 1.xx초*
 
-* value 값이 맞다면(조건 일치) 크래쉬 발생으로 지연되므로 컴퓨터 환경에 따라 소요시간: 2.xx초 ~ 7.xx초 *
+<img width="1132" height="593" alt="조건 일치" src="https://github.com/user-attachments/assets/ea04e751-2d4d-41bd-8477-e1926a7ba2ba" />  
+*그림 3. value 값이 맞은 경우 (조건 일치). 크래시 발생으로 지연 → 소요시간 약 2.xx초 ~ 7.xx초*
 
-- 이 과정을 반복하며 duration을 파싱하는 자동화 스크립트를 만들면 staff_code의 각 문자를 순차적으로 추출할 수 있음 
+#### 판별 기준
+
+| 응답 시간          | 의미                           |
+|--------------------|--------------------------------|
+| 0.xx ~ 1.xx 초     | 조건 불일치 → 잘못된 prefix    |
+| 2.xx ~ 7.xx 초     | 조건 일치 → 올바른 prefix      |
+
+#### 정리
+- 참가자는 `/report` 요청의 duration 값을 반복적으로 측정해 staff_code의 각 문자를 하나씩 알아낼 수 있습니다.  
+- 이 과정을 자동화하면 브루트포스 스크립트로 **16자리 staff_code**를 순차적으로 추출할 수 있습니다.  
+
+---
 
 ### 3. 최종 SSTI 익스플로잇
-<img width="1423" height="936" alt="스크린샷 2025-08-30 오전 2 27 22" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />
 
-- /list는 staff_code가 있어야 접근 가능 /list?code=찾은스탭코드로 접근 시 밑처럼 페이지가 뜸 
-<img width="1423" height="819" alt="스크린샷 2025-08-30 오전 2 28 36" src="https://github.com/user-attachments/assets/c7504be2-771a-471f-b010-00950449a51f" />
+- staff_code를 획득하면 `/list` 페이지에 접근할 수 있습니다.  
+- `http://~/list?code=찾은스탭코드` 로 접근 시 전용 페이지가 열립니다.  
 
-- /list는 SSTI 취약점이 존재하므로 motd 파라미터에 삽입하면 http://~/list?code=찾은스탭코드&motd={% print url_for.__globals__['os'].popen('cat flag.txt').read() %} 실행 시 flag 내용을 획득할 수 있음
-<img width="1508" height="495" alt="스크린샷 2025-08-30 오전 12 29 19" src="https://github.com/user-attachments/assets/fef338c4-126e-473f-b0c8-d185b31136d4" />
+<img width="1423" height="936" alt="List 접근" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />  
+*그림 4. staff_code 인증 후 /list 접근 성공*
 
+<img width="1423" height="819" alt="List 페이지" src="https://github.com/user-attachments/assets/c7504be2-771a-471f-b010-00950449a51f" />  
+*그림 5. staff 전용 페이지 화면*
+
+- 하지만 `/list`에는 **SSTI(Server-Side Template Injection)** 취약점이 존재합니다.  
+- `motd` 파라미터에 페이로드를 삽입하면 서버에서 코드가 실행됩니다.  
+
+#### 익스플로잇 예시
+
+```text
+http://~/list?code=찾은스탭코드&motd={% print url_for.__globals__['os'].popen('cat flag.txt').read() %}
+
+-실행 시 서버 내부의 flag.txt 내용을 획득할 수 있습니다.
+
+<img width="1508" height="495" alt="flag 획득" src="https://github.com/user-attachments/assets/fef338c4-126e-473f-b0c8-d185b31136d4" /> *그림 6. SSTI를 통해 flag.txt 내용을 출력한 화면*
