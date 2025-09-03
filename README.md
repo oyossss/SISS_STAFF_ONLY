@@ -59,7 +59,7 @@ blue;} input#staff_code[value^=a] {
 
 * value 값이 맞다면(조건 일치) 크래쉬 발생으로 지연되므로 컴퓨터 환경에 따라 소요시간: 2.xx초 ~ 7.xx초 *
 
-- 이 과정을 반복하는 자동화 스크립트를 만들면 staff_code의 각 문자를 순차적으로 추출할 수 있음
+- 이 과정을 반복하며 duration을 파싱하는 자동화 스크립트를 만들면 staff_code의 각 문자를 순차적으로 추출할 수 있음 
 
 ### 3. 최종 SSTI 익스플로잇
 <img width="1423" height="936" alt="스크린샷 2025-08-30 오전 2 27 22" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />
