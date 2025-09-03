@@ -1,5 +1,5 @@
 # STAFF_ONLY 
-## SISS Web Summer 31회 해킹캠프 - 최종 시나리오
+## SISS Web Summer 31회 해킹캠프 - 최종 시나리오 정리
 
 ## 문제 설명
 기다리던 콘서트 예매가 드디어 시작됐다.  
