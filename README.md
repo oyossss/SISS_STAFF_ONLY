@@ -55,11 +55,9 @@ blue;} input#staff_code[value^=a] {
 
 #### 스크린샷 및 응답 비교
 
-<img width="1132" height="593" alt="조건 불일치" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />  
-*그림 2. value 값이 틀린 경우 (조건 불일치). 크래시 발생 없음 → 소요시간 약 0.xx초 ~ 1.xx초*
+<img width="1132" height="593" alt="조건 불일치" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />  *그림 2. value 값이 틀린 경우 (조건 불일치). 크래시 발생 없음 → 소요시간 약 0.xx초 ~ 1.xx초*
 
-<img width="1132" height="593" alt="조건 일치" src="https://github.com/user-attachments/assets/ea04e751-2d4d-41bd-8477-e1926a7ba2ba" />  
-*그림 3. value 값이 맞은 경우 (조건 일치). 크래시 발생으로 지연 → 소요시간 약 2.xx초 ~ 7.xx초*
+<img width="1132" height="593" alt="조건 일치" src="https://github.com/user-attachments/assets/ea04e751-2d4d-41bd-8477-e1926a7ba2ba" />  *그림 3. value 값이 맞은 경우 (조건 일치). 크래시 발생으로 지연 → 소요시간 약 2.xx초 ~ 7.xx초*
 
 #### 판별 기준
 
@@ -79,13 +77,11 @@ blue;} input#staff_code[value^=a] {
 - staff_code를 획득하면 `/list` 페이지에 접근할 수 있습니다.  
 - `http://~/list?code=찾은스탭코드` 로 접근 시 전용 페이지가 열립니다.  
 
-<img width="1423" height="936" alt="List 접근" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />  
-*그림 4. staff_code 인증 후 /list 접근 성공*
+<img width="1423" height="936" alt="List 접근" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />  *그림 4. staff_code 인증 후 /list 접근 성공*
 
-<img width="1423" height="819" alt="List 페이지" src="https://github.com/user-attachments/assets/c7504be2-771a-471f-b010-00950449a51f" />  
-*그림 5. staff 전용 페이지 화면*
+<img width="1423" height="819" alt="List 페이지" src="https://github.com/user-attachments/assets/c7504be2-771a-471f-b010-00950449a51f" />  *그림 5. staff 전용 페이지 화면*
 
-- `/list`에는 **SSTI(Server-Side Template Injection)** 취약점이 존재합니다.  
+- `/list`에는 SSTI 취약점이 존재합니다.  
 - `motd` 파라미터에 페이로드를 삽입하면 서버에서 코드가 실행됩니다.  
 
 #### 익스플로잇 예시
