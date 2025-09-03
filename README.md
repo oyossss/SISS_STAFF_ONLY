@@ -85,7 +85,7 @@ blue;} input#staff_code[value^=a] {
 <img width="1423" height="819" alt="List 페이지" src="https://github.com/user-attachments/assets/c7504be2-771a-471f-b010-00950449a51f" />  
 *그림 5. staff 전용 페이지 화면*
 
-- 하지만 `/list`에는 **SSTI(Server-Side Template Injection)** 취약점이 존재합니다.  
+- `/list`에는 **SSTI(Server-Side Template Injection)** 취약점이 존재합니다.  
 - `motd` 파라미터에 페이로드를 삽입하면 서버에서 코드가 실행됩니다.  
 
 #### 익스플로잇 예시
