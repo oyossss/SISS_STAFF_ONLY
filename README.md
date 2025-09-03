@@ -7,6 +7,7 @@
 하지만 무대 앞 시야를 포기할 순 없다!  
 스탭의 자리를 빼앗을 수밖에....
 
+---
 관리자 계정에만 존재하는 **16자리 staff_code**를 알아내고 이를 이용해 스탭 전용 페이지에 접근한 뒤 최종 flag를 획득해야합니다
 
 - Index 페이지: 좌석 선택 및 `optional` 입력 가능
@@ -18,6 +19,7 @@
 
 ### 1. css injection을 통해 staff_code 값 추출
 <img width="1600" height="821" alt="스크린샷 2025-08-29 오전 10 14 30" src="https://github.com/user-attachments/assets/80775ccc-3997-42f4-92b5-4b471702787d" />
+
 - `optional` 입력값이 `mypage`의 티켓의 CSS로 반영됨
 - CSP로 인해 외부 요청은 차단되어 **CSS 렌더링 지연 기반 side-channel 공격**을 사용해야함 
 - `input#staff_code[value^=...]` 조건부 선택자를 이용해 prefix가 맞으면  크래쉬를 유발시키고 이로 인해서 브라우저 렌더링이 지연됨
@@ -42,11 +44,11 @@ blue;} input#staff_code[value^=a] {
 - CSS 페이로드가 실행되면, **렌더링 시간(duration)** 차이로 조건이 맞는지 여부를 판별 가능   
 
 <img width="1132" height="593" alt="스크린샷 2025-08-28 오전 3 04 58" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />
-*value 값이 틀리다면(조건 불일치) 크래쉬 발생이 안 나기 때문에 지연도 없으므로 컴퓨터 환경에 따라 소요시간: 0.xx초 ~ 1.xx초 *
+* value 값이 틀리다면(조건 불일치) 크래쉬 발생이 안 나기 때문에 지연도 없으므로 컴퓨터 환경에 따라 소요시간: 0.xx초 ~ 1.xx초 *
 <img width="1132" height="593" alt="스크린샷 2025-08-28 오전 9 44 13" src="https://github.com/user-attachments/assets/ea04e751-2d4d-41bd-8477-e1926a7ba2ba" />
-*value 값이 맞다면(조건 일치) 크래쉬 발생으로 지연되므로 컴퓨터 환경에 따라 소요시간: 2.xx초 ~ 7.xx초*
+* value 값이 맞다면(조건 일치) 크래쉬 발생으로 지연되므로 컴퓨터 환경에 따라 소요시간: 2.xx초 ~ 7.xx초 *
 
-- 이 과정을 반복하는 스크립트를 만들면 staff_code의 각 문자를 순차적으로 추출할 수 있음
+이 과정을 반복하는 스크립트를 만들면 staff_code의 각 문자를 순차적으로 추출할 수 있음
 
 ### 3. 최종 SSTI 익스플로잇
 <img width="1423" height="936" alt="스크린샷 2025-08-30 오전 2 27 22" src="https://github.com/user-attachments/assets/7cb988fe-c0a8-4708-8b6c-9dc8d8155ed0" />
