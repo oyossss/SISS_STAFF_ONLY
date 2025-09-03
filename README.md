@@ -48,7 +48,7 @@ blue;} input#staff_code[value^=a] {
 ```
 ### 2. Report 페이지 활용
 
-- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도합니다
+- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도합니다 (관리자의 mypage에는 input text 형태로 staff_code가 html에 존재합니다)
 - 이때, 티켓의 `optional` 값에 삽입된 **CSS 페이로드**가 실행됩니다
 - 조건이 맞으면 CSS 변수 중첩으로 인한 **브라우저 크래시 → 지연 발생**, 조건이 틀리면 **정상 렌더링 → 빠른 응답**이 발생합니다 
 - 따라서 참가자는 **duration 값의 차이**를 기반으로 staff_code의 각 문자를 판별할 수 있습니다
