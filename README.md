@@ -1,5 +1,5 @@
-#STAFF_ONLY 
-##SISS Web Summer 31회 해킹캠프 - 최종 시나리오
+# STAFF_ONLY 
+## SISS Web Summer 31회 해킹캠프 - 최종 시나리오
 
 ## 문제 설명
 기다리던 콘서트 예매가 드디어 시작됐다.  
@@ -18,7 +18,7 @@
 
 ### 1. css injection을 통해 staff_code 값 추출
 <img width="1600" height="821" alt="스크린샷 2025-08-29 오전 10 14 30" src="https://github.com/user-attachments/assets/80775ccc-3997-42f4-92b5-4b471702787d" />
-- `optional` 입력값이 `mypage`의 티켓의 CSS로 반영됨 
+- `optional` 입력값이 `mypage`의 티켓의 CSS로 반영됨
 - CSP로 인해 외부 요청은 차단되어 **CSS 렌더링 지연 기반 side-channel 공격**을 사용해야함 
 - `input#staff_code[value^=...]` 조건부 선택자를 이용해 prefix가 맞으면  크래쉬를 유발시키고 이로 인해서 브라우저 렌더링이 지연됨
 - 참가자는 실행 시간의 차이로 참/거짓을 판별함 
@@ -35,9 +35,10 @@ blue;} input#staff_code[value^=a] {
     --g: var(--f),var(--f),var(--f),var(--f),var(--f);
 }
 * { background-image: var(--g); }
+```
 
 ### 2. Report 페이지 활용
-- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도
+- `/report` 기능을 이용해 관리자가 `/mypage?ticket_id=xx`를 열람하도록 유도 
 - CSS 페이로드가 실행되면, **렌더링 시간(duration)** 차이로 조건이 맞는지 여부를 판별 가능   
 
 <img width="1132" height="593" alt="스크린샷 2025-08-28 오전 3 04 58" src="https://github.com/user-attachments/assets/e949bbf2-72bb-4f81-8ca0-61ad79d20d3b" />
