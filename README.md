@@ -1,5 +1,5 @@
 # STAFF_ONLY 
-## SISS Summer 제 31회 해킹캠프 WEB - 최종 시나리오 정리
+## SISS 제 31회 해킹캠프 WEB - 최종 시나리오 정리
 
 ## 문제 설명
 기다리던 콘서트 예매가 드디어 시작됐다.  
@@ -17,12 +17,6 @@
 3. `/list`의 SSTI 취약점을 이용해 최종 flag 탈취  
 
 ---
-
-## 세부 조건
-- **Index 페이지**: 좌석 선택 및 `optional` 입력 가능  
-- **MyPage 페이지**: 구매 티켓 확인 (단, staff_code가 있을 경우에만 `<input id="staff_code">` 렌더링). Index에서 입력한 optional이 티켓의 style로 적용됨  
-- **Report 페이지**: 관리자가 유저가 제출한 경로(`/mypage?ticket_id=xx`)를 열람  
-- **List 페이지**: staff_code가 있어야 접근 가능  
 
 ## Solve Guide  
 
